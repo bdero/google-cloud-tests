@@ -1,0 +1,29 @@
+---
+- name: Provision webserver instance
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  vars:
+    name: simple-webserver
+    type: f1-micro
+    image: debian-7
+
+  tasks:
+    - name: Launch instance
+      gce:
+        instance_names: "{{ name }}"
+        machine_type: "{{ type }}"
+        image: "{{ image }}"
+        tags:
+          - webserver
+      register: instance
+
+    - debug: var=instance
+
+    # To confirm the instance successfully launched
+    - name: Wait for SSH
+      wait_for: >
+        host={{ item.public_ip }}
+        port=22 delay=10 timeout=60
+      with_items: "{{ instance.instance_data }}"
