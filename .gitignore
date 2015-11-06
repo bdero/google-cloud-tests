@@ -1,4 +1,5 @@
 *\.pyc
 *\.pem
+*\.p12
 /[^/]*\.json
-/secrets.py
+/credentials.sh
