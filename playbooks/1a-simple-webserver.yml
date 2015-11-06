@@ -1,4 +1,9 @@
 ---
+# This playbook provisions one GCE instance.
+#
+# Example use:
+#   ansible-playbook 1a-simple-webserver.yml
+
 - name: Provision webserver instance
   hosts: localhost
   gather_facts: no
