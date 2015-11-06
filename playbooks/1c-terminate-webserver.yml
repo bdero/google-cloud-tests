@@ -2,7 +2,7 @@
 # This playbook terminates a GCE instance.
 #
 # Example use:
-#   ansible-playbook 1a-simple-webserver.yml
+#   ansible-playbook 1c-simple-webserver.yml
 
 - name: Terminate webserver instance
   hosts: localhost
