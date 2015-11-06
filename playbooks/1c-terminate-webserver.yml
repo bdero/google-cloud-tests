@@ -1,0 +1,24 @@
+---
+# This playbook terminates a GCE instance.
+#
+# Example use:
+#   ansible-playbook 1a-simple-webserver.yml
+
+- name: Terminate webserver instance
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  vars:
+    name: simple-webserver
+    zone: us-east1-b
+
+  tasks:
+    - name: Terminate instance
+      gce:
+        instance_names: "{{ name }}"
+        zone: "{{ zone }}"
+        state: absent
+      register: instance
+
+    - debug: var=instance
