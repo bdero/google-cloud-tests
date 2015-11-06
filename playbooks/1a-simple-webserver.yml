@@ -8,6 +8,7 @@
     name: simple-webserver
     type: f1-micro
     image: debian-7
+    zone: us-east1-b
 
   tasks:
     - name: Launch instance
@@ -15,6 +16,8 @@
         instance_names: "{{ name }}"
         machine_type: "{{ type }}"
         image: "{{ image }}"
+        zone: "{{ zone }}"
+        state: present
         tags:
           - webserver
       register: instance
