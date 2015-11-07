@@ -1,0 +1,20 @@
+---
+# This playbook deploys Nginx on a GCE instance.
+#
+# Example use:
+#   ansible-playbook 1b-deploy-webserver.yml
+
+- name: Deploy webserver on instance
+  hosts: tag_webserver
+
+  tasks:
+    - name: Add nginx stable PPA
+      apt_repository:
+        repo: ppa:nginx/stable
+        update_cache: yes
+        state: present
+
+    - name: Install nginx
+      apt:
+        pkg: nginx
+        state: latest
