@@ -1,5 +1,5 @@
 ---
-# This playbook provisions one GCE instance.
+# This playbook provisions one GCE network and instance.
 #
 # Example use:
 #   ansible-playbook 1a-provision-webserver.yml
@@ -16,22 +16,49 @@
     zone: us-east1-b
 
   tasks:
-    - name: Launch instance
+    - name: Create network
+      gce_net:
+        name: app-tier
+        ipv4_range: 10.0.16.0/24
+        state: present
+
+    - name: Add ssh firewall rule
+      gce_net:
+        fwname: ssh
+        name: app-tier
+        allowed: tcp:22
+        src_range: 0.0.0.0/0
+        target_tags: webserver
+        state: present
+
+    - name: Add http firewall rule
+      gce_net:
+        fwname: http
+        name: app-tier
+        allowed: tcp:80
+        src_range: 0.0.0.0/0
+        target_tags: webserver
+        state: present
+
+    - name: Launch webserver instance
       gce:
         instance_names: "{{ name }}"
         machine_type: "{{ type }}"
         image: "{{ image }}"
         zone: "{{ zone }}"
+        network: app-tier
+        tags: webserver
         state: present
-        tags:
-          - webserver
       register: instance
 
-    - debug: var=instance
+    - debug:
+        var: instance
 
     # To confirm the instance successfully launched
     - name: Wait for SSH
-      wait_for: >
-        host={{ item.public_ip }}
-        port=22 delay=10 timeout=60
+      wait_for:
+        host: "{{ item.public_ip }}"
+        port: 22
+        delay: 10
+        timeout: 60
       with_items: "{{ instance.instance_data }}"
